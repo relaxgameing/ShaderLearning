@@ -1,4 +1,4 @@
-Shader "Custom/RayMarching"
+Shader "Learning/RayMarching"
 {
     Properties
     {
@@ -111,7 +111,7 @@ Shader "Custom/RayMarching"
                 float3 lightDir = normalize(p - lightPosition);
                 float  lumen = max(dot(normal, lightDir), 0);
 
-                color = float4(lumen, lumen, lumen, 1);
+                color = float4(1, 1, 1, 1) * lumen;
 
                 return color;
             }
