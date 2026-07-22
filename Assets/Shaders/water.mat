@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: outline
-  m_Shader: {fileID: 4800000, guid: 2ee3953370994fb19a3eba2528375a91, type: 3}
+  m_Name: water
+  m_Shader: {fileID: 4800000, guid: 266a0c915229e4d74bea1d8406fe839f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -85,7 +85,9 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AngleThreshold: 0.28
+    - _Amplitude: 1
+    - _AmplitudeDecrement: 0.18
+    - _AmplitudeIncrement: 0.5
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -98,12 +100,18 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FrequencyIncrement: 0.18
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _InitialAmplitude: 1
+    - _InitialFrequency: 1
+    - _InitialFrequncy: 2
     - _Metallic: 0
+    - _Multipler: 0.5
+    - _Multiplier: -0.18
     - _OcclusionStrength: 1
-    - _OutlineWidth: 0.01
+    - _Octaves: 4
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -116,16 +124,19 @@ Material:
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
+    - _amp: 1
+    - _speed: 1
+    - _waveLen: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineWidth: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _WaterColor: {r: 0.46057317, g: 0.7092688, b: 0.8490566, a: 1}
+    - _dir: {r: 0.5, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &123910164181118181
+--- !u!114 &5785478964320887536
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
