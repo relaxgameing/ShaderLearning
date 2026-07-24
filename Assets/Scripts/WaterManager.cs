@@ -60,6 +60,10 @@ public class WaterManager : MonoBehaviour {
         return waveAmplitude * Mathf.Sin(angle);
     }
 
+    private void OnValidate() {
+        UpdateMaterialProperties();
+    }
+
 
     public void GenerateOceanMesh()
     {

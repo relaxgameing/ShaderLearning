@@ -560,7 +560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterManager
   waterMat: {fileID: 2100000, guid: 56799693a911a41dd9878670a32b0f7b, type: 2}
   waterColor: {r: 0, g: 0.4, b: 0.8, a: 1}
-  waveAmplitude: 1
+  waveAmplitude: 0.3
   waveLength: 10
   waveSpeed: 2
   waveSteepness: 0.5
@@ -677,9 +677,9 @@ Transform:
   m_GameObject: {fileID: 1423572580}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.22, y: 3.98, z: -0.08}
-  m_LocalScale: {x: 1, y: 3.99, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.7, y: 3.98, z: 0.04}
+  m_LocalScale: {x: 2.74, y: -0.75186, z: 2.5633886}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -697,7 +697,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Floater
   rg: {fileID: 1423572586}
   mr: {fileID: 1423572582}
-  floatPoints: []
+  <FloatPointsObjSpace>k__BackingField:
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: -0.5, z: -0.5}
+  - {x: 0.5, y: -0.5, z: 0.5}
+  - {x: -0.5, y: -0.5, z: 0.5}
+  - {x: -0.5, y: -0.5, z: -0.5}
 --- !u!54 &1423572586
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -706,9 +714,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423572580}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.05
+  m_Mass: 0.5
+  m_LinearDamping: 0.1
+  m_AngularDamping: 1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}

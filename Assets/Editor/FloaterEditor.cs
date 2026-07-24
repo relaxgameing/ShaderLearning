@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [CustomEditor(typeof(Floater))]
 public class FloaterEditor : Editor {
@@ -37,6 +36,7 @@ public class FloaterEditor : Editor {
                 GUILayout
                     .Height(30))) {
             _isSelecting = !_isSelecting;
+            Debug.Log($"selecting float points{_isSelecting}");
         }
     }
 
@@ -66,29 +66,29 @@ public class FloaterEditor : Editor {
             return;
         }
 
-        Debug.Log("hit");
 
         if (hitInfo.collider.gameObject != target.GameObject()) {
             return;
         }
 
+        Debug.Log("hit");
 
         var vert = _mf.sharedMesh.vertices;
 
-        var min = floater.transform.TransformPoint(vert[0]);
-        var minDist = Vector3.Distance(hitInfo.point, min);
+        var min = vert[0];
+        var minDist = Vector3.Distance(hitInfo.point, floater.transform.TransformPoint(min));
         foreach (Vector3 v in vert) {
             var worldPos = floater.transform.TransformPoint(v);
             var curDist = Vector3.Distance(worldPos, hitInfo.point);
             if (curDist < minDist) {
-                min = worldPos;
+                min = v;
                 minDist = curDist;
             }
         }
 
         Handles.color = Color.white;
         Handles.DrawWireCube(
-            min,
+            floater.transform.TransformPoint(min),
             Vector3.one * 0.2f
         );
 
@@ -107,10 +107,10 @@ public class FloaterEditor : Editor {
     }
 
     private void DrawSelectedVertices() {
-        foreach (Vector3 v in floater.FloatPoints) {
+        foreach (Vector3 v in floater.FloatPointsObjSpace) {
             Handles.color = Color.green;
             Handles.DrawWireCube(
-                v,
+                floater.transform.TransformPoint(v),
                 Vector3.one * 0.2f
             );
         }
