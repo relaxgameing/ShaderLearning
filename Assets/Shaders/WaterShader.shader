@@ -13,7 +13,9 @@ Shader "Learning/WaterShader"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"
+            "LightMode" = "UniversalForward"
+        }
 
         Pass
         {
@@ -23,6 +25,7 @@ Shader "Learning/WaterShader"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             struct Attributes
             {
@@ -34,6 +37,8 @@ Shader "Learning/WaterShader"
             {
                 float4 positionHCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                float3 normal: TEXCOORD1;
+                float3 posW : TEXCOORD2;
             };
 
 
@@ -57,37 +62,61 @@ Shader "Learning/WaterShader"
                 return height;
             }
 
-            float3 GerstnerWave(float3 pos) {
+            float3 GerstnerWave(float3 pos , out float3 normal) {
                 float w = 6.2831853 / _waveLen;
-                float phase = _speed * w;
+                float phase = _speed * w * _Time.y;
                 float2 d = normalize(_dir.xy);
                 float proj = dot(d, pos.xz);
-                float angle = w * proj + phase * _Time.x;
+                float angle = w * proj + phase ;
 
                 float3 p = float3(0 , 0 , 0) ;
                 p.x = pos.x + _steep * _amp * d.x * cos(angle);
                 p.z = pos.z + _steep * _amp * d.y * cos(angle);
-
                 p.y = pos.y + _amp * sin(angle);
 
+                normal.x = - d.x * w * _amp * cos(angle);
+                normal.z = - d.y * w * _amp * cos(angle);
+                normal.y = 1 - _steep * w * _amp * sin(angle);
+
+                normal = normalize(normal);
                 return p;
             }
+
 
              v2f vert(Attributes val)
             {
                 float3 posW = TransformObjectToWorld(val.positionOS);
-                posW= GerstnerWave(posW);
+                float3 normal;
+                posW= GerstnerWave(posW , normal);
+
+
 
                 v2f OUT;
                 OUT.positionHCS = TransformWorldToHClip(posW);
+                OUT.posW = posW;
+                OUT.normal = normal;
                 OUT.uv = val.uv;
                 return OUT;
             }
 
             half4 frag( v2f val) : SV_Target
             {
-                half4 color = _WaterColor;
-                return color;
+
+                float3 normal= normalize(val.normal);
+                Light mainLight = GetMainLight();
+                float3 camDir = normalize(GetCameraPositionWS() - val.posW);
+
+                float3 lightDir = mainLight.direction;
+                float3 reflectedDir = reflect(-lightDir , normal);
+
+
+                float ambient = 0.2f;
+                float diffuse = saturate(dot(lightDir , normal));
+                float specular =saturate(pow( saturate(dot(reflectedDir , camDir)), 100));
+
+                half3 color =_WaterColor.rgb * (ambient + diffuse * mainLight.color ) + specular;
+                return half4(color, _WaterColor.a);
+
             }
             ENDHLSL
         }

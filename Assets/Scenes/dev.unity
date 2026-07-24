@@ -205,8 +205,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.1475957, y: 0.38266566, z: -0.062072963, w: -0.9099064}
-  m_LocalPosition: {x: 2.4706297, y: 1.724562, z: -5.5099964}
+  m_LocalRotation: {x: -0.24346733, y: 0.4507644, z: -0.12934166, w: -0.84900284}
+  m_LocalPosition: {x: 7.627002, y: 6.612697, z: -5.8575697}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -444,6 +444,7 @@ GameObject:
   - component: {fileID: 1415251898}
   - component: {fileID: 1415251897}
   - component: {fileID: 1415251896}
+  - component: {fileID: 1415251900}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -468,7 +469,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -539,12 +540,34 @@ Transform:
   m_GameObject: {fileID: 1415251895}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.02, y: 0.93, z: 0.18}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1415251900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415251895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd6244fc99a49c5961b79940d146ba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterManager
+  waterMat: {fileID: 2100000, guid: 56799693a911a41dd9878670a32b0f7b, type: 2}
+  waterColor: {r: 0, g: 0.4, b: 0.8, a: 1}
+  waveAmplitude: 1
+  waveLength: 10
+  waveSpeed: 2
+  waveSteepness: 0.5
+  waveDirection: {x: 1, y: 0.5}
+  width: 100
+  height: 100
+  cellScale: 1
 --- !u!1 &1423572580
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +580,8 @@ GameObject:
   - component: {fileID: 1423572583}
   - component: {fileID: 1423572582}
   - component: {fileID: 1423572581}
+  - component: {fileID: 1423572586}
+  - component: {fileID: 1423572585}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -652,12 +677,54 @@ Transform:
   m_GameObject: {fileID: 1423572580}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.22, y: -0.131, z: -0.08}
+  m_LocalPosition: {x: 0.22, y: 1.43, z: -0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1423572585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423572580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a79299df95942a597fc2edd3453fcea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Floater
+  rg: {fileID: 1423572586}
+  mr: {fileID: 1423572582}
+  floatPoints: []
+--- !u!54 &1423572586
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423572580}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0.05
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
