@@ -205,8 +205,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.24346733, y: 0.4507644, z: -0.12934166, w: -0.84900284}
-  m_LocalPosition: {x: 7.627002, y: 6.612697, z: -5.8575697}
+  m_LocalRotation: {x: -0.02675921, y: -0.96712106, z: 0.22532104, w: -0.114853024}
+  m_LocalPosition: {x: -1.8150253, y: 5.541672, z: 8.478454}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -540,7 +540,7 @@ Transform:
   m_GameObject: {fileID: 1415251895}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.02, y: 0.93, z: 0.18}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -560,9 +560,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterManager
   waterMat: {fileID: 2100000, guid: 56799693a911a41dd9878670a32b0f7b, type: 2}
   waterColor: {r: 0, g: 0.4, b: 0.8, a: 1}
-  waveAmplitude: 0.3
+  waveAmplitude: 0.7
   waveLength: 10
-  waveSpeed: 2
+  waveSpeed: 2.5
   waveSteepness: 0.5
   waveDirection: {x: 1, y: 0.5}
   width: 100
@@ -678,8 +678,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.7, y: 3.98, z: 0.04}
-  m_LocalScale: {x: 2.74, y: -0.75186, z: 2.5633886}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -695,17 +695,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a79299df95942a597fc2edd3453fcea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Floater
-  rg: {fileID: 1423572586}
+  rb: {fileID: 1423572586}
   mr: {fileID: 1423572582}
   <FloatPointsObjSpace>k__BackingField:
   - {x: -0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 0.5, z: -0.5}
   - {x: -0.5, y: 0.5, z: 0.5}
   - {x: 0.5, y: 0.5, z: 0.5}
-  - {x: 0.5, y: -0.5, z: -0.5}
-  - {x: 0.5, y: -0.5, z: 0.5}
   - {x: -0.5, y: -0.5, z: 0.5}
   - {x: -0.5, y: -0.5, z: -0.5}
+  - {x: 0.5, y: -0.5, z: -0.5}
+  - {x: 0.5, y: -0.5, z: 0.5}
+  waterDrag: 0.1
 --- !u!54 &1423572586
 Rigidbody:
   m_ObjectHideFlags: 0

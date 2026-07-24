@@ -5,16 +5,19 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Floater : MonoBehaviour {
 
-    [SerializeField] private Rigidbody rg;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] private MeshRenderer mr;
     [field: SerializeField] public List<Vector3> FloatPointsObjSpace { get; private set; }
+
+    [SerializeField] private float waterDrag;
+
     private WaterManager _waterManager;
 
     private float _volumn;
     private float _volumnPerPoint;
 
     private void Awake() {
-        rg = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         mr = GetComponent<MeshRenderer>();
 
         _volumn = mr.bounds.size.x * mr.bounds.size.z * mr.bounds.size.y;
@@ -40,12 +43,15 @@ public class Floater : MonoBehaviour {
             float mag =(_volumnPerPoint * Physics.gravity.magnitude *   underWaterHeight );
             if (underWaterHeight  > 0) {
                 Debug.DrawRay(pos, Vector3.up * mag, Color.yellow);
+                rb.AddForceAtPosition( Vector3.up * mag, pos, ForceMode.Force);
 
-                rg.AddForceAtPosition( Vector3.up * mag, pos, ForceMode.Force);
+                Vector3 pointVelocity = rb.GetPointVelocity(pos);
+                rb.AddForceAtPosition(-pointVelocity * waterDrag , pos , ForceMode.Force);
             }
         }
 
-        Debug.DrawRay(rg.transform.position, rg.linearVelocity, Color.yellow);
+        rb.AddTorque(-rb.angularVelocity * waterDrag, ForceMode.Force);
+        Debug.DrawRay(rb.transform.position, rb.linearVelocity, Color.yellow);
     }
 
     public void AddFloatPoint(Vector3 pos) {
@@ -62,7 +68,7 @@ public class Floater : MonoBehaviour {
     private void OnDrawGizmos() {
         var pos = transform.position;
         pos.y -= mr.bounds.extents.y;
-        Gizmos.DrawRay(pos, rg.linearVelocity);
+        Gizmos.DrawRay(pos, rb.linearVelocity);
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(pos, 0.1f);

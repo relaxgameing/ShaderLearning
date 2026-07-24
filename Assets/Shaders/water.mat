@@ -124,9 +124,9 @@ Material:
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
-    - _amp: 0.3
+    - _amp: 0.7
     - _k: 1
-    - _speed: 2
+    - _speed: 2.5
     - _steep: 0.5
     - _waveLen: 10
     m_Colors:

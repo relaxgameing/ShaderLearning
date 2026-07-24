@@ -1,37 +1,23 @@
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(Floater))]
 public class FloaterEditor : Editor {
-    private Floater floater;
+    private Floater _floater;
     private MeshFilter _mf;
 
     private bool _isSelecting = false;
-    private HashSet<Vector3> _selectedVertex;
-    private List<Vector3> _shownVertex;
-
-    private Vector3 pointerPos;
 
     private void OnEnable() {
-        floater = target.GetComponent<Floater>();
-        if (_selectedVertex == null) {
-            _selectedVertex = new();
-        }
-
-        _mf = floater.GetComponent<MeshFilter>();
+        _floater = target.GetComponent<Floater>();
+        _mf = _floater.GetComponent<MeshFilter>();
     }
 
     public override void OnInspectorGUI() {
-        // 1. Draw default fields (width, height, cellScale)
         DrawDefaultInspector();
-
-        // 2. Get reference to target script
-
         EditorGUILayout.Space(10);
 
-        // 3. Render Inspector Button
         if (GUILayout.Button($"{(_isSelecting ? "Stop selection" : "Start selecting face")}",
                 GUILayout
                     .Height(30))) {
@@ -76,9 +62,9 @@ public class FloaterEditor : Editor {
         var vert = _mf.sharedMesh.vertices;
 
         var min = vert[0];
-        var minDist = Vector3.Distance(hitInfo.point, floater.transform.TransformPoint(min));
+        var minDist = Vector3.Distance(hitInfo.point, _floater.transform.TransformPoint(min));
         foreach (Vector3 v in vert) {
-            var worldPos = floater.transform.TransformPoint(v);
+            var worldPos = _floater.transform.TransformPoint(v);
             var curDist = Vector3.Distance(worldPos, hitInfo.point);
             if (curDist < minDist) {
                 min = v;
@@ -88,16 +74,16 @@ public class FloaterEditor : Editor {
 
         Handles.color = Color.white;
         Handles.DrawWireCube(
-            floater.transform.TransformPoint(min),
+            _floater.transform.TransformPoint(min),
             Vector3.one * 0.2f
         );
 
         if (e.type == EventType.MouseDown) {
-            if (_selectedVertex.Contains(min)) {
-                floater.RemoveFloatPoint(min);
+            if (_floater.FloatPointsObjSpace.Contains(min)) {
+                _floater.RemoveFloatPoint(min);
             }
             else {
-                floater.AddFloatPoint(min);
+                _floater.AddFloatPoint(min);
             }
         }
 
@@ -107,10 +93,10 @@ public class FloaterEditor : Editor {
     }
 
     private void DrawSelectedVertices() {
-        foreach (Vector3 v in floater.FloatPointsObjSpace) {
+        foreach (Vector3 v in _floater.FloatPointsObjSpace) {
             Handles.color = Color.green;
             Handles.DrawWireCube(
-                floater.transform.TransformPoint(v),
+                _floater.transform.TransformPoint(v),
                 Vector3.one * 0.2f
             );
         }
