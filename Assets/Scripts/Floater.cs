@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Floater : MonoBehaviour {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private MeshRenderer mr;
+    [Tooltip("has to be child of the floater")]
+    [SerializeField] private Vector3 customCOM;
     [field: SerializeField] public List<Vector3> FloatPointsObjSpace { get; private set; }
-
     [SerializeField] private float waterDrag;
 
     private WaterManager _waterManager;
@@ -67,19 +69,16 @@ public class Floater : MonoBehaviour {
     private void OnValidate() {
         _volumn = mr.bounds.size.x * mr.bounds.size.z * mr.bounds.size.y;
         _volumnPerPoint = _volumn / FloatPointsObjSpace.Count;
+        rb.ResetCenterOfMass();
+        rb.centerOfMass = rb.centerOfMass + customCOM;
     }
 
 #if UNITY_EDITOR
 
-
-
     private void OnDrawGizmos() {
-        var pos = transform.position;
-        // pos.y -= mr.bounds.min;
-        Gizmos.DrawRay(rb.position, rb.linearVelocity);
-
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(pos, 0.1f);
+        Gizmos.DrawRay(rb.worldCenterOfMass, rb.linearVelocity);
+        Gizmos.DrawSphere(rb.worldCenterOfMass, 0.1f);
 
         Gizmos.color = Color.dodgerBlue;
         foreach (Vector3 p in FloatPointsObjSpace) {

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1964897742971786267}
   m_Layer: 0
-  m_Name: ship 1
+  m_Name: ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 7239164484496762187}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.10369, y: -0, z: 6.9378}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -54,15 +54,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b13eb3fbe62a407c87b5e1cfdc0f8c6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.535853
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b13eb3fbe62a407c87b5e1cfdc0f8c6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.43
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b13eb3fbe62a407c87b5e1cfdc0f8c6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -15.937799
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4b13eb3fbe62a407c87b5e1cfdc0f8c6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -152,7 +152,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: -0.5, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -161,7 +161,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -182,6 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Floater
   rb: {fileID: 271016387602329704}
   mr: {fileID: 31321864569820074}
+  customCOM: {x: -0.5, y: 0, z: 0}
   <FloatPointsObjSpace>k__BackingField:
   - {x: 0.006321252, y: -0.01, z: -0.009551363}
   - {x: 0.00016364931, y: -0.01, z: -0.009551363}
@@ -216,5 +217,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.09690768, y: 0.038449556, z: 0.08048916}
-  m_Center: {x: 0.00022883713, y: 0.000051691186, z: 0.026083592}
+  m_Size: {x: 0.09690768, y: 0.038449556, z: 0.02183135}
+  m_Center: {x: 0.00022883814, y: 0.000051691135, z: -0.003245412}

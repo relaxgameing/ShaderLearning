@@ -2,12 +2,17 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
+public enum FloaterEditorState {
+    NotActive,
+    FloaterPointSelection,
+    // CenterOfMassSelection,
+}
+
 [CustomEditor(typeof(Floater))]
 public class FloaterEditor : Editor {
     private Floater _floater;
     private MeshFilter _mf;
-
-    private bool _isSelecting = false;
+    private FloaterEditorState _state = FloaterEditorState.NotActive;
 
     private void OnEnable() {
         _floater = target.GetComponent<Floater>();
@@ -18,17 +23,27 @@ public class FloaterEditor : Editor {
         DrawDefaultInspector();
         EditorGUILayout.Space(10);
 
-        if (GUILayout.Button($"{(_isSelecting ? "Stop selection" : "Start selecting face")}",
+        GUILayout.Label("Floater editor options");
+        EditorGUILayout.Space(5);
+        if (GUILayout.Button($"{(_state == FloaterEditorState.FloaterPointSelection ? "Stop selection" : "Start selecting face")}",
                 GUILayout
                     .Height(30))) {
-            _isSelecting = !_isSelecting;
-            Debug.Log($"selecting float points{_isSelecting}");
+
+            if (_state == FloaterEditorState.NotActive) {
+                _state = FloaterEditorState.FloaterPointSelection;
+            }else {
+                _state = FloaterEditorState.NotActive;
+            }
         }
     }
 
 
     private void OnSceneGUI() {
-        if (!_isSelecting) {
+        FloatingPointSelection();
+    }
+
+    private void FloatingPointSelection() {
+        if (_state != FloaterEditorState.FloaterPointSelection) {
             return;
         }
 
