@@ -4,7 +4,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Floater : MonoBehaviour {
-
     [SerializeField] private Rigidbody rb;
     [SerializeField] private MeshRenderer mr;
     [field: SerializeField] public List<Vector3> FloatPointsObjSpace { get; private set; }
@@ -40,7 +39,10 @@ public class Floater : MonoBehaviour {
             float underWaterHeight = Mathf.Clamp(waterHeight - pos.y, 0,
                 Vector3.Distance(mr.bounds.max , mr.bounds.min));
 
-            float mag =(_volumnPerPoint * Physics.gravity.magnitude *   underWaterHeight );
+            float immersion = underWaterHeight / Vector3.Distance(mr.bounds.max, mr.bounds.min);
+
+            // this is not the real lifeway , but a working approximation
+            float mag =(_volumnPerPoint * Physics.gravity.magnitude * immersion);
             if (underWaterHeight  > 0) {
                 Debug.DrawRay(pos, Vector3.up * mag, Color.yellow);
                 rb.AddForceAtPosition( Vector3.up * mag, pos, ForceMode.Force);
@@ -62,13 +64,19 @@ public class Floater : MonoBehaviour {
         FloatPointsObjSpace.Remove(pos);
     }
 
+    private void OnValidate() {
+        _volumn = mr.bounds.size.x * mr.bounds.size.z * mr.bounds.size.y;
+        _volumnPerPoint = _volumn / FloatPointsObjSpace.Count;
+    }
 
 #if UNITY_EDITOR
 
+
+
     private void OnDrawGizmos() {
         var pos = transform.position;
-        pos.y -= mr.bounds.extents.y;
-        Gizmos.DrawRay(pos, rb.linearVelocity);
+        // pos.y -= mr.bounds.min;
+        Gizmos.DrawRay(rb.position, rb.linearVelocity);
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(pos, 0.1f);
