@@ -100,6 +100,8 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FoamSoftness: 0.3
+    - _FoamThreshold: 1
     - _FrequencyIncrement: 0.18
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -132,9 +134,14 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DeepColor: {r: 0.08235294, g: 0.39607844, b: 0.7529412, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 0.95, g: 0.97999996, b: 1, a: 1}
+    - _PeakColor: {r: 0, g: 0.7058824, b: 0.84705883, a: 1}
+    - _ShallowColor: {r: 0.12941177, g: 0.5882353, b: 0.9529412, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _WaterColor: {r: 0, g: 0.4, b: 0.8, a: 1}
+    - _WaterColor: {r: 0.21537916, g: 0.52278394, b: 0.8301887, a: 1}
+    - _WaterDeep: {r: 0, g: 0.0613207, b: 0.6132076, a: 1}
     - _dir: {r: 1, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

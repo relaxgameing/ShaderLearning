@@ -27,6 +27,7 @@ public class WaterManager : MonoBehaviour {
     // [SerializeField]private Vector2 waveDirection = new Vector2(1.0f, 0.5f);
 
     private static readonly int WaveCountID = Shader.PropertyToID("_waveCount");
+    private static readonly int MaxWaveAmpID = Shader.PropertyToID("_maxWaveAmp");
     private static readonly int WaveDataID = Shader.PropertyToID("_waveData");
     private static readonly int WaveDirID = Shader.PropertyToID("_waveDir");
     private const int MAX_WAVES = 16;
@@ -74,11 +75,13 @@ public class WaterManager : MonoBehaviour {
 
         int count = Mathf.Min(waves.Count, MAX_WAVES);
 
+        var maxAmp = 0f;
         var _waveData = new Vector4[MAX_WAVES];
         var _waveDir = new Vector4[MAX_WAVES];
 
         for (int i = 0; i < count; i++) {
             var curWave = waves[i];
+            maxAmp += curWave.amplitude;
 
             // Pack:  (Amp , Wave length , speed , steepness)
             _waveData[i] = new Vector4(
@@ -92,7 +95,9 @@ public class WaterManager : MonoBehaviour {
             _waveDir[i] = new Vector4(dir.x , dir.y, 0, 0);
         }
 
+
         waterMat.SetInt(WaveCountID, count);
+        waterMat.SetFloat(MaxWaveAmpID , maxAmp);
         waterMat.SetVectorArray(WaveDataID, _waveData);
         waterMat.SetVectorArray(WaveDirID, _waveDir);
     }

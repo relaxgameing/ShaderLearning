@@ -2,7 +2,15 @@ Shader "Learning/WaterShader"
 {
     Properties
     {
-        [MainColor] _WaterColor("Water Color", Color) = (1, 1, 1, 1)
+        [Header(Water Colors)]
+        _DeepColor ("Deep Water Color", Color) = (0.02, 0.1, 0.3, 1.0)
+        _ShallowColor ("Shallow/Mid Color", Color) = (0.0, 0.5, 0.7, 1.0)
+        _PeakColor ("Wave Peak Highlight", Color) = (0.3, 0.85, 0.95, 1.0)
+
+        [Header(Foam Settings)]
+        _FoamColor ("Foam Color", Color) = (0.95, 0.98, 1.0, 1.0)
+        _FoamThreshold ("Foam Height Threshold", Range(0.5, 1.0)) = 0.85
+        _FoamSoftness ("Foam Softness", Range(0.01, 0.3)) = 0.1
     }
 
     SubShader
@@ -32,13 +40,22 @@ Shader "Learning/WaterShader"
                 float2 uv : TEXCOORD0;
                 float3 normal: TEXCOORD1;
                 float3 posW : TEXCOORD2;
+                float3 color: TEXCOORD3;
             };
 
             static const int MAX_WAVES = 16;
 
-            float4 _WaterColor;
+            float4 _DeepColor;
+            float4 _ShallowColor;
+            float4 _PeakColor;
+
+            float4 _FoamColor;
+            float  _FoamThreshold;
+            float  _FoamSoftness;
+
             CBUFFER_START(UnityPerMaterial)
                 int    _waveCount;
+                int    _maxWaveAmp;
                 float4 _waveData[16]; //  (Amp , Wave length , speed , steepness)
                 float4 _waveDir[16]; // (dir.x , dir.y , 0,0)
             CBUFFER_END
@@ -57,7 +74,6 @@ Shader "Learning/WaterShader"
             // }
 
             float3 CalculateGerstnerWave(int index, float3 worldPos, out float3 normal) {
-
                 float amp = _waveData[index].x;
                 float waveLen = _waveData[index].y;
                 float speed = _waveData[index].z;
@@ -90,7 +106,7 @@ Shader "Learning/WaterShader"
             // Function to accumulate all active waves
             float3 GetTotalWaveDisplacement(float3 worldPos, out float3 finalNormal) {
                 float3 totalDisplacement = float3(0, 0, 0);
-                finalNormal = float3(0,1,0);
+                finalNormal = float3(0, 0, 0);
 
                 for (int i = 0; i < _waveCount; i++) {
                     float3 normal;
@@ -105,14 +121,31 @@ Shader "Learning/WaterShader"
             v2f vert(Attributes val) {
                 float3 posW = TransformObjectToWorld(val.positionOS);
                 float3 normal;
-                posW += GetTotalWaveDisplacement(posW, normal);
+                float3 offset = GetTotalWaveDisplacement(posW, normal);
+                posW += offset;
 
+                    float normalizedHeight = saturate((offset.y + _maxWaveAmp ) / ( 2. * _maxWaveAmp));
+                half3 waterBaseColor;
+                if (normalizedHeight < 0.5) {
+                    // Remap [0.0, 0.5] to [0.0, 1.0]
+                    float t = normalizedHeight * 2.0;
+                    waterBaseColor = lerp(_DeepColor.rgb, _ShallowColor.rgb, t);
+                }
+                else {
+                    // Remap [0.5, 1.0] to [0.0, 1.0]
+                    float t = (normalizedHeight - 0.5) * 2.0;
+                    waterBaseColor = lerp(_ShallowColor.rgb, _PeakColor.rgb, t);
+                }
+
+                float foamFactor = smoothstep(_FoamThreshold - _FoamSoftness, _FoamThreshold + _FoamSoftness, normalizedHeight);
+                half3 finalBaseColor = lerp(waterBaseColor, _FoamColor.rgb, foamFactor);
 
                 v2f OUT;
                 OUT.positionHCS = TransformWorldToHClip(posW);
                 OUT.posW = posW;
                 OUT.normal = normal;
                 OUT.uv = val.uv;
+                OUT.color = finalBaseColor;
                 return OUT;
             }
 
@@ -129,8 +162,8 @@ Shader "Learning/WaterShader"
                 float diffuse = saturate(dot(lightDir, normal));
                 float specular = saturate(pow(saturate(dot(reflectedDir, camDir)), 100));
 
-                half3 color = _WaterColor.rgb * (ambient + diffuse * mainLight.color) + specular;
-                return half4(color, _WaterColor.a);
+                half3 color = val.color * (ambient + diffuse * mainLight.color) + specular;
+                return half4(color, 1);
             }
             ENDHLSL
         }
