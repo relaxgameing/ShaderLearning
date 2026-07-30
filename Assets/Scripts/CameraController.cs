@@ -5,8 +5,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour {
     [SerializeField] private Transform anchor;
+    [SerializeField] private float anchorRadius = 10f;
+    [SerializeField] private float anchorAngle = 0f;
     [SerializeField] private float lookSpeed = 5f;
-    [SerializeField] private float camDistance = 5f;
 
 
     private void OnEnable() {
@@ -19,16 +20,18 @@ public class CameraController : MonoBehaviour {
     }
 
 
-    private void FixedUpdate() {
-        var dt = Time.deltaTime;
-        var dist = Vector3.Distance(transform.position, anchor.position);
-        if (camDistance < dist) {
-            var diff = anchor.position - transform.position;
-            diff.y = 0;
-            transform.SetPositionAndRotation(
-                transform.position +  diff.normalized * (Mathf.Abs(camDistance - dist)),
-                transform.rotation);
-        }
+    private void LateUpdate() {
+        UpdatePosition();
+    }
+
+    private void UpdatePosition() {
+        var angle = Mathf.Deg2Rad * anchorAngle;
+        var pos = anchor.position + new Vector3(anchorRadius * Mathf.Cos(angle), 0f,
+            anchorRadius * Mathf.Sin(angle));
+
+
+        this.transform.position = new Vector3(pos.x, this.transform.position.y, pos.z);
+        this.transform.LookAt(anchor.position);
     }
 
     private void OnLook(InputAction.CallbackContext obj) {
@@ -36,7 +39,11 @@ public class CameraController : MonoBehaviour {
         var movement = obj.ReadValue<Vector2>();
 
         var val = Mathf.Sign(movement.x) * dt * 10f * lookSpeed;
-        transform.RotateAround(anchor.position , Vector3.up ,val  );
+        // transform.RotateAround(anchor.position , Vector3.up ,val  );
+        anchorAngle += val;
+    }
 
+    private void OnValidate() {
+        UpdatePosition();
     }
 }

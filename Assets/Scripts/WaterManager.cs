@@ -14,17 +14,11 @@ public struct GerstnerWave {
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class WaterManager : MonoBehaviour {
-    [Header("Ocean Properties")] [SerializeField]
-    private Material waterMat;
-    [SerializeField] private Color waterColor = new Color(0f, 0.4f, 0.8f, 1f);
+    [Header("Ocean Properties")]
+    [SerializeField] private Material waterMat;
 
     [Header("Wave Definitions")] [SerializeField]
     private List<GerstnerWave> waves = new List<GerstnerWave>();
-    // [SerializeField]private float waveAmplitude = 1.0f;
-    // [SerializeField]private float waveLength = 10.0f;
-    // [SerializeField]private float waveSpeed = 2.0f;
-    // [SerializeField]private float waveSteepness = 0.5f;
-    // [SerializeField]private Vector2 waveDirection = new Vector2(1.0f, 0.5f);
 
     private static readonly int WaveCountID = Shader.PropertyToID("_waveCount");
     private static readonly int MaxWaveAmpID = Shader.PropertyToID("_maxWaveAmp");
@@ -34,9 +28,9 @@ public class WaterManager : MonoBehaviour {
 
     private static WaterManager _instance;
 
-    // [Header("Mesh Settings")] public int width = 100;
-    // public int height = 100;
-    // public float cellScale = 1.0f;
+    [Header("Mesh Settings")] public int width = 100;
+    public int height = 100;
+    public float cellScale = 1.0f;
 
 
     private void Awake() {
@@ -107,50 +101,54 @@ public class WaterManager : MonoBehaviour {
     }
 
 
-    // public void GenerateOceanMesh() {
-    //     MeshFilter meshFilter = GetComponent<MeshFilter>();
-    //     Mesh mesh = new Mesh();
-    //     mesh.name = "OceanPlane";
-    //
-    //     Vector3[] vertices = new Vector3[(width + 1) * (height + 1)];
-    //     Vector2[] uvs = new Vector2[vertices.Length];
-    //     int[] triangles = new int[width * height * 6];
-    //
-    //     // 1. Generate Vertices & UVs
-    //     for (int z = 0, i = 0; z <= height; z++) {
-    //         for (int x = 0; x <= width; x++, i++) {
-    //             vertices[i] = new Vector3(x * cellScale, 0, z * cellScale);
-    //             uvs[i] = new Vector2((float)x / width, (float)z / height);
-    //         }
-    //     }
-    //
-    //     // 2. Generate Triangles
-    //     int vert = 0;
-    //     int tris = 0;
-    //     for (int z = 0; z < height; z++) {
-    //         for (int x = 0; x < width; x++) {
-    //             triangles[tris + 0] = vert + 0;
-    //             triangles[tris + 1] = vert + width + 1;
-    //             triangles[tris + 2] = vert + 1;
-    //             triangles[tris + 3] = vert + 1;
-    //             triangles[tris + 4] = vert + width + 1;
-    //             triangles[tris + 5] = vert + width + 2;
-    //
-    //             vert++;
-    //             tris += 6;
-    //         }
-    //
-    //         vert++;
-    //     }
-    //
-    //     // 3. Assign to Mesh
-    //     mesh.vertices = vertices;
-    //     mesh.uv = uvs;
-    //     mesh.triangles = triangles;
-    //     mesh.RecalculateNormals();
-    //     mesh.RecalculateBounds();
-    //
-    //     meshFilter.sharedMesh = mesh; // Use sharedMesh in Editor!
-    //     Debug.Log($"[OceanGenerator] Mesh generated with {vertices.Length} vertices!");
-    // }
+    [ContextMenu("Generate water mesh")]
+    public void GenerateOceanMesh() {
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        Mesh mesh = new Mesh();
+        mesh.name = "OceanPlane";
+
+        Vector3[] vertices = new Vector3[(width + 1) * (height + 1)];
+        Vector2[] uvs = new Vector2[vertices.Length];
+        int[] triangles = new int[width * height * 6];
+
+        // 1. Generate Vertices & UVs
+        for (int z = 0, i = 0; z <= height; z++) {
+            for (int x = 0; x <= width; x++, i++) {
+                vertices[i] = new Vector3(x * cellScale - (width / 2f), 0, z * cellScale -
+                        (height/2f));
+                uvs[i] = new Vector2((float)x / width, (float)z / height);
+            }
+        }
+
+        // 2. Generate Triangles
+        int vert = 0;
+        int tris = 0;
+        for (int z = 0; z < height; z++) {
+            for (int x = 0; x < width; x++) {
+                triangles[tris + 0] = vert + 0;
+                triangles[tris + 1] = vert + width + 1;
+                triangles[tris + 2] = vert + 1;
+                triangles[tris + 3] = vert + 1;
+                triangles[tris + 4] = vert + width + 1;
+                triangles[tris + 5] = vert + width + 2;
+
+                vert++;
+                tris += 6;
+            }
+
+            vert++;
+        }
+
+        // 3. Assign to Mesh
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+
+        meshFilter.sharedMesh = mesh; // Use sharedMesh in Editor!
+        meshRenderer.SetMaterials(new(){waterMat});
+        Debug.Log($"[OceanGenerator] Mesh generated with {vertices.Length} vertices!");
+    }
 }
