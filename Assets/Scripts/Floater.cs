@@ -17,9 +17,6 @@ public class Floater : MonoBehaviour {
     private float _volumnPerPoint;
 
     private void Awake() {
-        rb = GetComponent<Rigidbody>();
-        mr = GetComponent<MeshRenderer>();
-
         _volumn = mr.bounds.size.x * mr.bounds.size.z * mr.bounds.size.y;
         _volumnPerPoint = _volumn / FloatPointsObjSpace.Count;
     }
