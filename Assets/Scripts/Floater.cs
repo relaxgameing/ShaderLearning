@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Floater : MonoBehaviour {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private MeshRenderer mr;
