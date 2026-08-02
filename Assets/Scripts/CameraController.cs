@@ -9,6 +9,12 @@ public class CameraController : MonoBehaviour {
     [SerializeField] private float anchorAngle = 0f;
     [SerializeField] private float lookSpeed = 5f;
 
+    private Camera _cam;
+
+    private void Awake() {
+        _cam = GetComponent<Camera>();
+        _cam.depthTextureMode |= DepthTextureMode.Depth;
+    }
 
     private void OnEnable() {
         Cursor.lockState = CursorLockMode.Locked;

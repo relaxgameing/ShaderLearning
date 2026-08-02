@@ -11,24 +11,34 @@ Shader "Learning/WaterShader"
         _FoamColor ("Foam Color", Color) = (0.95, 0.98, 1.0, 1.0)
         _FoamThreshold ("Foam Height Threshold", Range(0.5, 1.0)) = 0.85
         _FoamSoftness ("Foam Softness", Range(0.01, 0.3)) = 0.1
+        _EdgeFoamThreshold("Shore foam threshold" , Float) = 0.2
+        _FoamSpeed("Foam speed" , Float) = 5
+        _FoamScale("Foam scale" , Float) = 500
+        _FoamNoise("Foam noise" , 2D) = "White"{}
     }
 
     SubShader
     {
         Tags
         {
-            "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"
+            "RenderType"="Transparent"
+            "Queue"="Transparent"
+            "RenderPipeline" = "UniversalPipeline"
             "LightMode" = "UniversalForward"
         }
 
         Pass
         {
+
+            ZWrite Off
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             struct Attributes {
                 float4 positionOS : POSITION;
@@ -49,9 +59,14 @@ Shader "Learning/WaterShader"
             float4 _ShallowColor;
             float4 _PeakColor;
 
-            float4 _FoamColor;
-            float  _FoamThreshold;
-            float  _FoamSoftness;
+            float4    _FoamColor;
+            float     _FoamThreshold;
+            float     _FoamSoftness;
+            float     _EdgeFoamThreshold;
+            float     _FoamScale;
+            float     _FoamSpeed;
+            sampler2D _FoamNoise;
+            float4    _FoamNoise_ST;
 
             CBUFFER_START(UnityPerMaterial)
                 int    _waveCount;
@@ -60,18 +75,52 @@ Shader "Learning/WaterShader"
                 float4 _waveDir[16]; // (dir.x , dir.y , 0,0)
             CBUFFER_END
 
-            // float _k;
-            // float WaterHeight(float3 pos) {
-            //     float w = 2. / _waveLen;
-            //
-            //     float val = sin(dot(_dir.xy  , pos.xz) * w + (_speed * w ) * _Time.y) + 1;
-            //     val = pow(val , _k);
-            //     val /= pow(2 , _k);
-            //
-            //     float height = 0.;
-            //     height = 2 * _amp * val;
-            //     return height;
-            // }
+            inline float unity_noise_randomValue(float2 uv) {
+                return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453);
+            }
+
+            inline float unity_noise_interpolate(float a, float b, float t) {
+                return (1.0 - t) * a + (t * b);
+            }
+
+            inline float unity_valueNoise(float2 uv) {
+                float2 i = floor(uv);
+                float2 f = frac(uv);
+                f = f * f * (3.0 - 2.0 * f);
+
+                uv = abs(frac(uv) - 0.5);
+                float2 c0 = i + float2(0.0, 0.0);
+                float2 c1 = i + float2(1.0, 0.0);
+                float2 c2 = i + float2(0.0, 1.0);
+                float2 c3 = i + float2(1.0, 1.0);
+                float  r0 = unity_noise_randomValue(c0);
+                float  r1 = unity_noise_randomValue(c1);
+                float  r2 = unity_noise_randomValue(c2);
+                float  r3 = unity_noise_randomValue(c3);
+
+                float bottomOfGrid = unity_noise_interpolate(r0, r1, f.x);
+                float topOfGrid = unity_noise_interpolate(r2, r3, f.x);
+                float t = unity_noise_interpolate(bottomOfGrid, topOfGrid, f.y);
+                return t;
+            }
+
+            void Unity_SimpleNoise_float(float2 UV, float Scale, out float Out) {
+                float t = 0.0;
+
+                float freq = pow(2.0, float(0));
+                float amp = pow(0.5, float(3 - 0));
+                t += unity_valueNoise(float2(UV.x * Scale / freq, UV.y * Scale / freq)) * amp;
+
+                freq = pow(2.0, float(1));
+                amp = pow(0.5, float(3 - 1));
+                t += unity_valueNoise(float2(UV.x * Scale / freq, UV.y * Scale / freq)) * amp;
+
+                freq = pow(2.0, float(2));
+                amp = pow(0.5, float(3 - 2));
+                t += unity_valueNoise(float2(UV.x * Scale / freq, UV.y * Scale / freq)) * amp;
+
+                Out = t;
+            }
 
             float3 CalculateGerstnerWave(int index, float3 worldPos, out float3 normal) {
                 float amp = _waveData[index].x;
@@ -124,7 +173,7 @@ Shader "Learning/WaterShader"
                 float3 offset = GetTotalWaveDisplacement(posW, normal);
                 posW += offset;
 
-                    float normalizedHeight = saturate((offset.y + _maxWaveAmp ) / ( 2. * _maxWaveAmp));
+                float normalizedHeight = saturate((offset.y + _maxWaveAmp) / (2. * _maxWaveAmp));
                 half3 waterBaseColor;
                 if (normalizedHeight < 0.5) {
                     // Remap [0.0, 0.5] to [0.0, 1.0]
@@ -140,11 +189,12 @@ Shader "Learning/WaterShader"
                 float foamFactor = smoothstep(_FoamThreshold - _FoamSoftness, _FoamThreshold + _FoamSoftness, normalizedHeight);
                 half3 finalBaseColor = lerp(waterBaseColor, _FoamColor.rgb, foamFactor);
 
+
                 v2f OUT;
                 OUT.positionHCS = TransformWorldToHClip(posW);
                 OUT.posW = posW;
                 OUT.normal = normal;
-                OUT.uv = val.uv;
+                OUT.uv = TRANSFORM_TEX(val.uv, _FoamNoise);
                 OUT.color = finalBaseColor;
                 return OUT;
             }
@@ -157,13 +207,30 @@ Shader "Learning/WaterShader"
                 float3 lightDir = mainLight.direction;
                 float3 reflectedDir = reflect(-lightDir, normal);
 
+                float2 screenUv = GetNormalizedScreenSpaceUV(val.positionHCS);
+                float  rawDepth = SampleSceneDepth(screenUv);
+                float  eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
+
+                float posDistFromCam = -TransformWorldToView(val.posW).z;
+
+                float depthDiff = abs(eyeDepth - posDistFromCam);
 
                 float ambient = 0.2f;
                 float diffuse = saturate(dot(lightDir, normal));
                 float specular = saturate(pow(saturate(dot(reflectedDir, camDir)), 100));
 
-                half3 color = val.color * (ambient + diffuse * mainLight.color) + specular;
-                return half4(color, 1);
+                float3 color = val.color;
+                if (depthDiff <= _EdgeFoamThreshold) {
+                    float noise;
+                    Unity_SimpleNoise_float(val.uv + _FoamSpeed * unity_DeltaTime.z, _FoamScale, noise);
+                    // float noise  =  tex2D(_FoamNoise, val.uv * 5  + _Time.x);
+                    // Unity_GradientNoise_float( val.uv + _Time.x , 500 + _CosTime.x , noise);
+                    float gradient = (depthDiff / _EdgeFoamThreshold);
+                    color += step(gradient, noise) * _FoamColor;
+                }
+
+                half3 finalColor = color * (ambient + diffuse * mainLight.color) + specular;
+                return half4(finalColor, 1);
             }
             ENDHLSL
         }
