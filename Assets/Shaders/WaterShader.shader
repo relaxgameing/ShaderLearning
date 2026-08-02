@@ -220,13 +220,11 @@ Shader "Learning/WaterShader"
                 float specular = saturate(pow(saturate(dot(reflectedDir, camDir)), 100));
 
                 float3 color = val.color;
-                // if (depthDiff <= _EdgeFoamThreshold) {
-                    float noise;
-                    Unity_SimpleNoise_float(val.uv + _FoamSpeed * unity_DeltaTime.z, _FoamScale, noise);
-                    float gradient = (depthDiff / _EdgeFoamThreshold);
-                    color += (1 - step(_EdgeFoamThreshold , depthDiff)) * step(gradient, noise) *
-                    _FoamColor;
-                // }
+                float  noise;
+                Unity_SimpleNoise_float(val.uv + _FoamSpeed * unity_DeltaTime.z, _FoamScale, noise);
+                float gradient = (depthDiff / _EdgeFoamThreshold);
+                color += (1 - step(_EdgeFoamThreshold, depthDiff)) * step(gradient, noise) *
+                _FoamColor;
 
                 half3 finalColor = color * (ambient + diffuse * mainLight.color) + specular;
                 return half4(finalColor, 1);

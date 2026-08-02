@@ -103,7 +103,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EdgeFoamThreshold: 8.57
+    - _EdgeFoamThreshold: 2.99
     - _EnvironmentReflections: 1
     - _FoamScale: 400
     - _FoamSoftness: 0.3
