@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -68,7 +69,7 @@ public class FloaterEditor : Editor {
         }
 
 
-        if (hitInfo.collider.gameObject != target.GameObject()) {
+        if (!target.GameObject().transform.IsChildOf(hitInfo.collider.gameObject.transform)) {
             return;
         }
 
@@ -100,6 +101,7 @@ public class FloaterEditor : Editor {
             else {
                 _floater.AddFloatPoint(min);
             }
+            _floater.MarkDirty();
         }
 
         if (e.isMouse) {
