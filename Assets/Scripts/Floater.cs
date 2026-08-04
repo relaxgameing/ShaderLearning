@@ -74,7 +74,7 @@ public class Floater : MonoBehaviour {
     private void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(rb.worldCenterOfMass, rb.linearVelocity);
-        Gizmos.DrawSphere(rb.worldCenterOfMass, 0.1f);
+        Gizmos.DrawSphere(rb.worldCenterOfMass, 0.2f);
 
         Gizmos.color = Color.dodgerBlue;
         foreach (Vector3 p in FloatPointsObjSpace) {
