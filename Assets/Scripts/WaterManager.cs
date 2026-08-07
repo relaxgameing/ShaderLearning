@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine;
+
 
 [System.Serializable]
 public struct GerstnerWave {
@@ -14,8 +13,8 @@ public struct GerstnerWave {
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class WaterManager : MonoBehaviour {
-    [Header("Ocean Properties")]
-    [SerializeField] private Material waterMat;
+    [Header("Ocean Properties")] [SerializeField]
+    private Material waterMat;
 
     [Header("Wave Definitions")] [SerializeField]
     private List<GerstnerWave> waves = new List<GerstnerWave>();
@@ -46,12 +45,10 @@ public class WaterManager : MonoBehaviour {
         UpdateMaterialProperties();
     }
 
-    public float GetWaterHeight(Vector3 worldPos)
-    {
+    public float GetWaterHeight(Vector3 worldPos) {
         Vector3 displacement = Vector3.zero;
 
-        for (int i = 0; i < waves.Count; i++)
-        {
+        for (int i = 0; i < waves.Count; i++) {
             Vector2 dir = waves[i].direction.normalized;
             float w = 6.2831853f / Mathf.Max(0.0001f, waves[i].wavelength);
             float phase = waves[i].speed * w * Time.time;
@@ -60,7 +57,7 @@ public class WaterManager : MonoBehaviour {
             displacement.y += waves[i].amplitude * Mathf.Sin(angle);
         }
 
-        return  displacement.y;
+        return displacement.y;
     }
 
 
@@ -79,19 +76,19 @@ public class WaterManager : MonoBehaviour {
 
             // Pack:  (Amp , Wave length , speed , steepness)
             _waveData[i] = new Vector4(
-                curWave.amplitude ,
-                curWave.wavelength ,
+                curWave.amplitude,
+                curWave.wavelength,
                 curWave.speed,
                 curWave.steepness);
 
             // Pack: (direction.xy , 0 , 0 )
             var dir = curWave.direction.normalized;
-            _waveDir[i] = new Vector4(dir.x , dir.y, 0, 0);
+            _waveDir[i] = new Vector4(dir.x, dir.y, 0, 0);
         }
 
 
         waterMat.SetInt(WaveCountID, count);
-        waterMat.SetFloat(MaxWaveAmpID , maxAmp);
+        waterMat.SetFloat(MaxWaveAmpID, maxAmp);
         waterMat.SetVectorArray(WaveDataID, _waveData);
         waterMat.SetVectorArray(WaveDirID, _waveDir);
     }
@@ -116,7 +113,7 @@ public class WaterManager : MonoBehaviour {
         for (int z = 0, i = 0; z <= height; z++) {
             for (int x = 0; x <= width; x++, i++) {
                 vertices[i] = new Vector3(x * cellScale - (width / 2f), 0, z * cellScale -
-                        (height/2f));
+                    (height / 2f));
                 uvs[i] = new Vector2((float)x / width, (float)z / height);
             }
         }
@@ -148,7 +145,7 @@ public class WaterManager : MonoBehaviour {
         mesh.RecalculateBounds();
 
         meshFilter.sharedMesh = mesh; // Use sharedMesh in Editor!
-        meshRenderer.SetMaterials(new(){waterMat});
+        meshRenderer.SetMaterials(new() { waterMat });
         Debug.Log($"[OceanGenerator] Mesh generated with {vertices.Length} vertices!");
     }
 }

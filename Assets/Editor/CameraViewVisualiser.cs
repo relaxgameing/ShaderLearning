@@ -13,6 +13,8 @@ public class CameraViewVisualiser : EditorWindow {
             return;
         }
 
+        camera.depthTextureMode |= DepthTextureMode.Depth;
+
         if (_gameCam == null) {
             Debug.LogError("camera whose volume to visualise is not selected");
             return;
@@ -22,11 +24,11 @@ public class CameraViewVisualiser : EditorWindow {
             _shader = Shader.Find("Learning/CameraVolumeVisualiser");
         }
 
-        if (_shader  != null && _mat == null) {
+        if (_shader  != null && _mat == null ) {
             _mat = new Material(_shader);
         }
 
-        if (_mat != null)
+        if (_mat != null && _gameCam != null)
         {
             RenderTexture activeRT = RenderTexture.active;
             if (activeRT == null) {
@@ -41,6 +43,11 @@ public class CameraViewVisualiser : EditorWindow {
 
             // 2. Copy current scene render into the temporary texture
             Graphics.Blit(activeRT, tempRT);
+
+            _mat.SetMatrix("_GameCamViewMat" , camera.worldToCameraMatrix);
+            _mat.SetVector("_GameCamPosWS" , _gameCam.transform.position);
+
+            // Debug.Log($"{_gameCam.transform.position}");
 
             // 3. Blit from temporary texture back to scene target through your material
             Graphics.Blit(tempRT, activeRT, _mat);
@@ -79,12 +86,8 @@ public class CameraViewVisualiser : EditorWindow {
 
             _isEnabled = !_isEnabled;
 
-            if (_isEnabled) {
-                RenderPipelineManager.endCameraRendering += OnSceneCameraPostRender;
-            }
-            else {
-                RenderPipelineManager.endCameraRendering -= OnSceneCameraPostRender;
-            }
+            EditorToRenderFeatureBridge._gameCam = _gameCam;
+            EditorToRenderFeatureBridge.isEnabled = _isEnabled;
         }
     }
 

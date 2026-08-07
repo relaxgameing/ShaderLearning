@@ -1,49 +1,45 @@
 Shader "Learning/CameraVolumeVisualiser"
 {
-    Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-    }
     SubShader
     {
-        // No culling or depth
+        Tags { "RenderPipeline" = "UniversalPipeline" }
         Cull Off ZWrite Off ZTest Always
 
         Pass
         {
-            CGPROGRAM
-            #pragma vertex vert
+            Name "CameraVolumeVisualiserPass"
+
+            HLSLPROGRAM
+            #pragma vertex Vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
-            struct appdata {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
+            float4x4 _GameCamViewMat;
 
-            struct v2f {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
+            float4 frag(Varyings input) : SV_Target
+            {
+                float2 uv = input.texcoord;
+                float4 col = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv);
 
-            v2f vert(appdata v) {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                return o;
+                float rawDepth = SampleSceneDepth(uv);
+                float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
+                float linearDepth = Linear01Depth(rawDepth, _ZBufferParams);
+
+                float4 viewPos = float4(uv, rawDepth, 1.0);
+                float4 worldPos = mul(UNITY_MATRIX_I_VP, viewPos);
+                // worldPos.xyz /= worldPos.w;
+
+                float4 pos = mul(_GameCamViewMat, worldPos);
+                pos.xy /= pos.w;
+
+                float isInside = (1 - step(1 , abs(pos.xy)));
+
+                return  isInside * col;
             }
-
-            sampler2D _MainTex;
-
-            fixed4 frag(v2f i) : SV_Target {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // just invert the colors
-
-                col = 1 - col;
-                return col;
-            }
-            ENDCG
+            ENDHLSL
         }
     }
 }
