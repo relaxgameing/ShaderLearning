@@ -25,12 +25,8 @@ Shader "Learning/CameraVolumeVisualiser"
                 float4 col = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv);
 
                 float rawDepth = SampleSceneDepth(uv);
-                // float eyeDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
-                // float linearDepth = Linear01Depth(rawDepth, _ZBufferParams);
+                float3 worldPos = ComputeWorldSpacePosition(uv , rawDepth , UNITY_MATRIX_I_VP);
 
-                float4 viewPos = float4(uv * 2 -1  , rawDepth, 1.0);
-                float4 worldPos = mul(UNITY_MATRIX_I_VP, viewPos);
-                worldPos.xyz /= worldPos.w;
 
                 float4 pos = mul(_GameCamProjMat, float4(worldPos.xyz , 1.0));
                 pos.xyz /= pos.w;
@@ -40,9 +36,6 @@ Shader "Learning/CameraVolumeVisualiser"
                 float inside =  (isInside.x * isInside.y * insideZ );
 
                 return inside * col * 0.2 + (1 - inside) * col;
-                // return 1 -col;
-                // return float4(uv  , 0 , 1);
-                // return worldPos;
             }
             ENDHLSL
         }
