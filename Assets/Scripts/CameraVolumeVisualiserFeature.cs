@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -11,7 +9,7 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
     [SerializeField]
     private Material _mat;
     CameraVolumeVisualiserFeaturePass m_ScriptablePass;
-    private static int matProperty = Shader.PropertyToID("_GameCamViewMat");
+    private static int matProperty = Shader.PropertyToID("_GameCamProjMat");
 
     /// <inheritdoc/>
     public override void Create()
@@ -81,7 +79,16 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
             dstDesc.clearBuffer = true;
             TextureHandle dst = renderGraph.CreateTexture(dstDesc);
 
-            _mat.SetMatrix(matProperty , EditorToRenderFeatureBridge._gameCam.worldToCameraMatrix);
+            var cam = EditorToRenderFeatureBridge._gameCam;
+            Matrix4x4 gpuProjection =
+                GL.GetGPUProjectionMatrix(
+                    cam.projectionMatrix,
+                    renderIntoTexture: true
+                );
+
+            var projectionMat = gpuProjection* cam.worldToCameraMatrix;
+
+            _mat.SetMatrix(matProperty, projectionMat);
 
             renderGraph.AddCopyPass(src, dst);
 
