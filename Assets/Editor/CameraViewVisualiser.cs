@@ -7,72 +7,6 @@ public class CameraViewVisualiser : EditorWindow {
     private Shader _shader;
     private Material _mat;
     private Camera _gameCam;
-    // private RenderTexture _gameCamRenderTexture;
-
-    // private Camera _overlayCam;
-    // private void Awake() {
-    //     var ob= new GameObject("Camera volume overlay");
-    //     _overlayCam = ob.AddComponent<Camera>();
-    //     var overlayCamData = _overlayCam.GetUniversalAdditionalCameraData();
-    //     overlayCamData.renderType = CameraRenderType.Overlay;
-    //
-    //     EditorToRenderFeatureBridge._overlayCam = _overlayCam;
-    // }
-    //
-    // private void OnDestroy() {
-    //     EditorToRenderFeatureBridge._overlayCam = null;
-    //     Destroy(_overlayCam);
-    // }
-
-    private void OnSceneCameraPostRender(ScriptableRenderContext scriptableRenderContext, Camera camera) {
-        if (!_isEnabled || camera.cameraType != CameraType.SceneView) {
-            return;
-        }
-
-        camera.depthTextureMode |= DepthTextureMode.Depth;
-
-        if (_gameCam == null) {
-            Debug.LogError("camera whose volume to visualise is not selected");
-            return;
-        }
-
-        if (_shader == null) {
-            _shader = Shader.Find("Learning/CameraVolumeVisualiser");
-        }
-
-        if (_shader  != null && _mat == null ) {
-            _mat = new Material(_shader);
-        }
-
-        if (_mat != null && _gameCam != null)
-        {
-            RenderTexture activeRT = RenderTexture.active;
-            if (activeRT == null) {
-                return;
-            }
-            RenderTexture tempRT = RenderTexture.GetTemporary(
-                activeRT.width,
-                activeRT.height,
-                activeRT.depth,
-                activeRT.format
-            );
-
-            // 2. Copy current scene render into the temporary texture
-            Graphics.Blit(activeRT, tempRT);
-
-            _mat.SetMatrix("_GameCamViewMat" , camera.worldToCameraMatrix);
-            _mat.SetVector("_GameCamPosWS" , _gameCam.transform.position);
-
-            // Debug.Log($"{_gameCam.transform.position}");
-
-            // 3. Blit from temporary texture back to scene target through your material
-            Graphics.Blit(tempRT, activeRT, _mat);
-
-            // 4. Release the temporary texture back to Unity memory pool
-            RenderTexture.ReleaseTemporary(tempRT);
-            Debug.Log("camera view visualiser working");
-        }
-    }
 
     [MenuItem("Tools/Camear view visualiser")]
     private static void ShowWindow() {
@@ -96,13 +30,6 @@ public class CameraViewVisualiser : EditorWindow {
             true
         );
 
-        // _gameCamRenderTexture = (RenderTexture)EditorGUILayout.ObjectField(
-        //     "Game Camera Render texture",
-        //     _gameCamRenderTexture,
-        //     typeof(RenderTexture),
-        //     true
-        // );
-
         if (GUILayout.Button($"{(_isEnabled ? "OFF" : "ON")} Visualiser",
                 GUILayout
                     .Height(30))) {
@@ -114,19 +41,6 @@ public class CameraViewVisualiser : EditorWindow {
             EditorToRenderFeatureBridge._gameCam = _gameCam;
             EditorToRenderFeatureBridge.isEnabled = _isEnabled;
 
-
-
-            // var baseCamData = _gameCam.GetUniversalAdditionalCameraData();
-            // if (_isEnabled) {
-            //     if (!baseCamData.cameraStack.Contains(_overlayCam)) {
-            //         baseCamData.cameraStack.Add(_overlayCam);
-            //     }
-            // }
-            // else {
-            //     if (baseCamData.cameraStack.Contains(_overlayCam)) {
-            //         baseCamData.cameraStack.Remove(_overlayCam);
-            //     }
-            // }
         }
     }
 
