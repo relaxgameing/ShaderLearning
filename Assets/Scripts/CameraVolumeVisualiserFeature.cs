@@ -11,6 +11,7 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
     private Material _mat;
     CameraVolumeVisualiserFeaturePass m_ScriptablePass;
     private static int MatGameCamViewProjMatrix = Shader.PropertyToID("_GameCamProjMat");
+    private static int MatGameCamWorldPos = Shader.PropertyToID("_GameCamPosWs");
     private static int MatGameCamInvViewProjMatrix = Shader.PropertyToID("_GameCamInvViewProjMat");
     private static int matGameCamDepthTexProperty = Shader.PropertyToID("_GameCamDepthTex");
 
@@ -85,6 +86,8 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
             var projectionMat = gpuProjection* cam.worldToCameraMatrix;
 
             _mat.SetMatrix(MatGameCamViewProjMatrix, projectionMat);
+            _mat.SetMatrix(MatGameCamInvViewProjMatrix, projectionMat.inverse);
+            _mat.SetVector(MatGameCamWorldPos, cam.transform.position);
 
             if (!EditorToRenderFeatureBridge._gameCamDepthTexture.IsUnityNull()) {
                 _mat.SetTexture(matGameCamDepthTexProperty , EditorToRenderFeatureBridge._gameCamDepthTexture);
