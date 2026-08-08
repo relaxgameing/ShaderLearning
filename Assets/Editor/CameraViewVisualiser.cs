@@ -7,6 +7,22 @@ public class CameraViewVisualiser : EditorWindow {
     private Shader _shader;
     private Material _mat;
     private Camera _gameCam;
+    // private RenderTexture _gameCamRenderTexture;
+
+    // private Camera _overlayCam;
+    // private void Awake() {
+    //     var ob= new GameObject("Camera volume overlay");
+    //     _overlayCam = ob.AddComponent<Camera>();
+    //     var overlayCamData = _overlayCam.GetUniversalAdditionalCameraData();
+    //     overlayCamData.renderType = CameraRenderType.Overlay;
+    //
+    //     EditorToRenderFeatureBridge._overlayCam = _overlayCam;
+    // }
+    //
+    // private void OnDestroy() {
+    //     EditorToRenderFeatureBridge._overlayCam = null;
+    //     Destroy(_overlayCam);
+    // }
 
     private void OnSceneCameraPostRender(ScriptableRenderContext scriptableRenderContext, Camera camera) {
         if (!_isEnabled || camera.cameraType != CameraType.SceneView) {
@@ -80,14 +96,37 @@ public class CameraViewVisualiser : EditorWindow {
             true
         );
 
+        // _gameCamRenderTexture = (RenderTexture)EditorGUILayout.ObjectField(
+        //     "Game Camera Render texture",
+        //     _gameCamRenderTexture,
+        //     typeof(RenderTexture),
+        //     true
+        // );
+
         if (GUILayout.Button($"{(_isEnabled ? "OFF" : "ON")} Visualiser",
                 GUILayout
                     .Height(30))) {
 
             _isEnabled = !_isEnabled;
 
+            _gameCam.depthTextureMode = DepthTextureMode.Depth;
+
             EditorToRenderFeatureBridge._gameCam = _gameCam;
             EditorToRenderFeatureBridge.isEnabled = _isEnabled;
+
+
+
+            // var baseCamData = _gameCam.GetUniversalAdditionalCameraData();
+            // if (_isEnabled) {
+            //     if (!baseCamData.cameraStack.Contains(_overlayCam)) {
+            //         baseCamData.cameraStack.Add(_overlayCam);
+            //     }
+            // }
+            // else {
+            //     if (baseCamData.cameraStack.Contains(_overlayCam)) {
+            //         baseCamData.cameraStack.Remove(_overlayCam);
+            //     }
+            // }
         }
     }
 

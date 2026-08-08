@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,9 +10,10 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
     [SerializeField]
     private Material _mat;
     CameraVolumeVisualiserFeaturePass m_ScriptablePass;
-    private static int matProperty = Shader.PropertyToID("_GameCamProjMat");
+    private static int MatGameCamViewProjMatrix = Shader.PropertyToID("_GameCamProjMat");
+    private static int MatGameCamInvViewProjMatrix = Shader.PropertyToID("_GameCamInvViewProjMat");
+    private static int matGameCamDepthTexProperty = Shader.PropertyToID("_GameCamDepthTex");
 
-    /// <inheritdoc/>
     public override void Create()
     {
         m_ScriptablePass = new CameraVolumeVisualiserFeaturePass(_mat);
@@ -52,13 +54,6 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
             _mat = mat;
         }
 
-        // This class stores the data needed by the RenderGraph pass.
-        // It is passed as a parameter to the delegate function that executes the RenderGraph pass.
-        private class PassData
-        {
-
-        }
-
         // RecordRenderGraph is where the RenderGraph handle can be accessed, through which render passes can be added to the graph.
         // FrameData is a context container through which URP resources can be accessed and managed.
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
@@ -80,6 +75,7 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
             TextureHandle dst = renderGraph.CreateTexture(dstDesc);
 
             var cam = EditorToRenderFeatureBridge._gameCam;
+            // var camRT = EditorToRenderFeatureBridge._gameCamRenderTexture;
             Matrix4x4 gpuProjection =
                 GL.GetGPUProjectionMatrix(
                     cam.projectionMatrix,
@@ -88,7 +84,11 @@ public class CameraVolumeVisualiserFeature : ScriptableRendererFeature {
 
             var projectionMat = gpuProjection* cam.worldToCameraMatrix;
 
-            _mat.SetMatrix(matProperty, projectionMat);
+            _mat.SetMatrix(MatGameCamViewProjMatrix, projectionMat);
+
+            if (!EditorToRenderFeatureBridge._gameCamDepthTexture.IsUnityNull()) {
+                _mat.SetTexture(matGameCamDepthTexProperty , EditorToRenderFeatureBridge._gameCamDepthTexture);
+            }
 
             renderGraph.AddCopyPass(src, dst);
 

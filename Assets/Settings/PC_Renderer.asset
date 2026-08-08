@@ -55,8 +55,9 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
+  - {fileID: 2964205958144093744}
   - {fileID: -1303368922676453769}
-  m_RendererFeatureMap: ad6b866f10d7b46c771e96d0de80e9ed
+  m_RendererFeatureMap: ad6b866f10d7b46c306e46289df92229771e96d0de80e9ed
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -85,6 +86,21 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &2964205958144093744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b12895c4b1be43ada5b1027f6131644, type: 3}
+  m_Name: CameraDepthToRenderTexture
+  m_EditorClassIdentifier: Assembly-CSharp::CameraDepthToRenderTexture
+  m_Active: 1
+  injectionPoint: 550
+  mat: {fileID: 2100000, guid: fa81f388158634a43975256bb2305441, type: 2}
 --- !u!114 &7833122117494664109
 MonoBehaviour:
   m_ObjectHideFlags: 0
