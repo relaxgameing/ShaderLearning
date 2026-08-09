@@ -3,6 +3,20 @@
 this repo contains all my implementation of shaders that i have learned and implemented
 <br>
 
+## Camera View Visualiser
+
+
+https://github.com/user-attachments/assets/1f9b74da-805e-460c-81dd-d78e2964488b
+
+This Shader help visualise the Surfaces which are currently in the Camera's view of a specific camera.
+As you can see in the video above all the surface which are visible in the main camera are tinted green 
+
+| Editor tool Controls  | Material Settings |
+| --- |  --- |
+| <img width="582" height="111" alt="Screenshot 2026-08-09 at 5 23 11 PM" src="https://github.com/user-attachments/assets/d571aa83-48a9-4068-a8eb-88008527036e" /> | <img width="582" height="111" alt="Screenshot 2026-08-09 at 5 22 50 PM" src="https://github.com/user-attachments/assets/4fdc109e-97b1-4743-aa20-a52f501e9866" /> |
+
+This is a editor first implementation to be used for visualisation
+
 ## Water Shader + Foam + Boat Controller
 <img width="640" height="360" alt="Water Shader Preview" src="https://github.com/user-attachments/assets/dd6eecba-3390-4b34-8efb-f0beff934dce" />
 
