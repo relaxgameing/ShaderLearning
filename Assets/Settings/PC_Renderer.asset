@@ -57,7 +57,8 @@ MonoBehaviour:
   - {fileID: 7833122117494664109}
   - {fileID: 2964205958144093744}
   - {fileID: -1303368922676453769}
-  m_RendererFeatureMap: ad6b866f10d7b46c306e46289df92229771e96d0de80e9ed
+  - {fileID: 2874834306298786433}
+  m_RendererFeatureMap: ad6b866f10d7b46c306e46289df92229771e96d0de80e9ed81b20bef9176e527
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -86,6 +87,21 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &2874834306298786433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2249b967b0030497683319659b8437d5, type: 3}
+  m_Name: OutlineRenderFeature
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineRenderFeature
+  m_Active: 1
+  settings:
+    outlinePostProcessingMat: {fileID: 2100000, guid: 63b1f534e810c45a8b28d8706f4ce58f, type: 2}
 --- !u!114 &2964205958144093744
 MonoBehaviour:
   m_ObjectHideFlags: 0
