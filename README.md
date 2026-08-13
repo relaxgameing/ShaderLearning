@@ -5,7 +5,6 @@ this repo contains all my implementation of shaders that i have learned and impl
 
 ## Camera View Visualiser
 
-
 https://github.com/user-attachments/assets/1f9b74da-805e-460c-81dd-d78e2964488b
 
 This Shader help visualise the Surfaces which are currently in the Camera's view of a specific camera.
@@ -32,7 +31,12 @@ Note: there is no post processing in the actual implementation , it is a result 
 #### Center of Mass selector
 [custom center of mass](https://github.com/user-attachments/assets/c2addafd-48c9-4796-b09c-c4dede2f445a)
 
+## Outline Post Processing
+<p align="center">
+<img  width="594" height="309" alt="Screenshot 2026-08-13 at 10 07 54 PM" src="https://github.com/user-attachments/assets/6e9987cb-08dd-4aeb-a54a-c0ac773d67e1" />
+</p>
 
+implemented with it's own custom render feature. Objects in "Outline" layer are rendered with outline
 
 ## RayMarching
 
